@@ -1,0 +1,6 @@
+#Command to extract array sequences from the nanopore sequenced plasmids
+
+for file in *.fastq; do
+    output_file="${file%.*}"
+    get_plasmid_inserts -i "$file" -u gcgttaacgctagcatggatgttttcccagtcacgacgttgtaaaacgacggccagtcttaagcgtctcatggcctgaccccggaccaagtggtggggta -d tggtcatagctgtttcctcgtagcaagcaagcgctcgaaacggtgcagcggctgttgccggtgctgtgccaggaccatggcctgaccccggaccaagtgg -l 5000 -t 15 -o "$output_file"
+done

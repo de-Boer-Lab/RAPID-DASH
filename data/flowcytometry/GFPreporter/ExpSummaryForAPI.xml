@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<Experiment xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Plates>
+    <Plate Name="01">
+      <Tubes>
+        <Tube Name="01-G0-A1" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G1-A2" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G2-A3" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G3-A4" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G4-A5" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G5-A6" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G6-A7" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G7-A8" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G8-A9" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G9-A10" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G10-A11" SignalStatisticsSettingId="0" />
+        <Tube Name="01-GFPonly-A12" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G0-B1" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G1-B2" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G2-B3" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G3-B4" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G4-B5" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G5-B6" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G6-B7" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G7-B8" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G8-B9" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G9-B10" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G10-B11" SignalStatisticsSettingId="0" />
+        <Tube Name="01-GFPonly-B12" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G0-C1" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G1-C2" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G2-C3" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G3-C4" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G4-C5" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G5-C6" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G6-C7" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G7-C8" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G8-C9" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G9-C10" SignalStatisticsSettingId="0" />
+        <Tube Name="01-G10-C11" SignalStatisticsSettingId="0" />
+        <Tube Name="01-GFPonly-C12" SignalStatisticsSettingId="0" />
+        <Tube Name="01-Ind_gRNA_GFP-D1" SignalStatisticsSettingId="0" />
+        <Tube Name="01-Array_GFP-D2" SignalStatisticsSettingId="0" />
+        <Tube Name="01-Ind_gRNA_GFP-E1" SignalStatisticsSettingId="0" />
+        <Tube Name="01-Array_GFP-E2" SignalStatisticsSettingId="0" />
+        <Tube Name="01-Ind_gRNA_GFP-F1" SignalStatisticsSettingId="0" />
+        <Tube Name="01-Array_GFP-F2" SignalStatisticsSettingId="0" />
+      </Tubes>
+    </Plate>
+  </Plates>
+  <Populations>
+    <Population Name="P1" />
+    <Population Name="P2" />
+    <Population Name="P3" />
+  </Populations>
+  <StatisticsSettings>
+    <TubeHeaderItems>
+      <TubeHeaderItem>EventsCount</TubeHeaderItem>
+      <TubeHeaderItem>RecordTime</TubeHeaderItem>
+      <TubeHeaderItem>Volume</TubeHeaderItem>
+      <TubeHeaderItem>AbortRate</TubeHeaderItem>
+    </TubeHeaderItems>
+    <PopulationStatisticsItems>
+      <PopulationStatisticsItem>Count</PopulationStatisticsItem>
+      <PopulationStatisticsItem>PercentOfParent</PopulationStatisticsItem>
+      <PopulationStatisticsItem>PercentOfAll</PopulationStatisticsItem>
+      <PopulationStatisticsItem>Concentration</PopulationStatisticsItem>
+    </PopulationStatisticsItems>
+    <SignalStatisticsSettings>
+      <SignalStatisticsSetting Id="0">
+        <SignalStatisticsSettingInfos>
+          <SignalStatisticsSettingInfo SignalName="Y763-PC7-A" StatisticsType="Median" />
+          <SignalStatisticsSettingInfo SignalName="V660-A" StatisticsType="Median" />
+          <SignalStatisticsSettingInfo SignalName="Y585-PE-A" StatisticsType="Median" />
+          <SignalStatisticsSettingInfo SignalName="V450-PB-A" StatisticsType="Median" />
+        </SignalStatisticsSettingInfos>
+      </SignalStatisticsSetting>
+    </SignalStatisticsSettings>
+  </StatisticsSettings>
+</Experiment>
