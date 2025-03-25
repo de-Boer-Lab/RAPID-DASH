@@ -23,7 +23,10 @@ gRNA_count <- array_long %>%
 
 heatmap <- ggplot(gRNA_count, aes(x = Position, y = factor(gRNA), fill = count)) +
   geom_tile(color = "white") +
-  scale_fill_gradientn(colors = c("white", "lightblue", "darkblue")) +
+  scale_fill_gradientn(
+    colors = c("white", "lightblue", "darkblue"),
+    limits = c(20, 70)  # Set legend scale range
+  ) +
   labs(x = "Position within the array", y = "gRNA") +
   theme_minimal() +
   theme(
@@ -32,7 +35,6 @@ heatmap <- ggplot(gRNA_count, aes(x = Position, y = factor(gRNA), fill = count))
     axis.title.x = element_text(size = 18, face = "bold"),
     axis.text.y = element_text(size = 18, face = "bold"),
     axis.ticks = element_blank(),
-    #panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
     plot.title = element_text(size = 16, face = "bold", hjust = 0.5)
   )

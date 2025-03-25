@@ -78,19 +78,6 @@ percent_data_mean <- percent_data %>%
 # Display the summarized mean percentages per sample
 percent_data_mean
 
-# Plot the mean percentage of GFP+ cells per sample with individual replicate points overlaid
-percent_data_mean %>% 
-  ggplot(aes(x = sample_name, y = mean_GFP)) +
-  geom_bar(aes(fill = Category), stat = "identity") +
-  geom_point(data = percent_data, aes(x = sample_name, y = percentage))+
-  labs(
-    title = "Percentage of GFP+ cells",
-    x = "Sample",
-    y = "GFP+ Percentage (%)"
-  ) +
-  theme_minimal() + 
-  coord_flip()  # Flip coordinates for better readability
-
 # Create a refined bar plot with custom ordering and labeling:
 ggplot(data = percent_data_mean, 
        aes(x = factor(sample_name, levels = c(paste0("G", 0:10), "GFPonly", "Ind_gRNA_GFP")))) +
