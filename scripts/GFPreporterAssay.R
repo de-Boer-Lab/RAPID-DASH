@@ -75,12 +75,13 @@ percent_data_mean <- percent_data %>%
     )
   )
 
+
 # Display the summarized mean percentages per sample
 percent_data_mean
 
 # Create a refined bar plot with custom ordering and labeling:
 ggplot(data = percent_data_mean, 
-       aes(x = factor(sample_name, levels = c(paste0("G", 0:10), "GFPonly", "Ind_gRNA_GFP")))) +
+       aes(x = factor(sample_name, levels = c(paste0("G", 0:10), "GFPonly")))) +
   # Plot the mean GFP+ percentages as bars, colored by Category
   geom_bar(aes(y = mean_GFP, fill = Category), 
            stat = "identity", width = 0.6) +
@@ -97,12 +98,11 @@ ggplot(data = percent_data_mean,
   ) +
   coord_flip() +  # Flip the coordinate system for horizontal bars
   # Customize the x-axis labels to display more informative names for each sample
-  scale_x_discrete(labels = c("Ind_gRNA_GFP" = "Pooled gRNA vectors",
-                              "GFPonly" = "GFP targeting gRNA",
+  scale_x_discrete(labels = c("GFPonly" = "GFP targeting gRNA",
                               "G10" = "G10", "G9" = "G9", "G8" = "G8",
                               "G7" = "G7", "G6" = "G6", "G5" = "G5",
                               "G4" = "G4", "G3" = "G3", "G2" = "G2",
-                              "G1" = "G1", "G0" = "G0")) +
+                              "G1" = "G1", "G0" = "NTC")) +
   # Enhance the theme for clarity and visual appeal
   theme_minimal() +
   theme(

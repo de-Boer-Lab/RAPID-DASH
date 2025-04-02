@@ -1,7 +1,7 @@
 library(tidyverse)
 
 
-array <- as.matrix(read.csv("../Plasmidsaurus/array_Lib_regPCA.csv", header = FALSE))
+array <- as.matrix(read.csv("data/nanopore_sequencing/array_library/array_Lib.csv", header = FALSE))
 
 array <- as.data.frame(array)
 
@@ -25,7 +25,7 @@ heatmap <- ggplot(gRNA_count, aes(x = Position, y = factor(gRNA), fill = count))
   geom_tile(color = "white") +
   scale_fill_gradientn(
     colors = c("white", "lightblue", "darkblue"),
-    limits = c(20, 70)  # Set legend scale range
+    limits = c(0, 70)  # Set legend scale range
   ) +
   labs(x = "Position within the array", y = "gRNA") +
   theme_minimal() +
