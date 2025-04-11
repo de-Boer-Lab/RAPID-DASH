@@ -1,0 +1,13 @@
+name: RAPID-DASH_OligoDesigner
+title: RAPID-DASH_OligoDesigner
+username: alathif
+account: alathif
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 14495201
+bundleId: 10096194
+url: https://alathif.shinyapps.io/RAPID-DASH_OligoDesigner/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: www/vapor.css
