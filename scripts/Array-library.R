@@ -14,12 +14,56 @@ array_long <- array %>%
 
 array_long$Position <- factor(str_extract(array_long$Position, "\\d+"), levels = paste0(1:10))
 
+gRNA_coverage <- array_long %>% 
+  dplyr::filter(gRNA %in% c(1:10)) %>% 
+  group_by(gRNA) %>% 
+  summarise(count = n())
+
+position_coverage <- array_long %>% 
+  dplyr::filter(gRNA %in% c(1:10)) %>% 
+  group_by(Position) %>% 
+  summarise(count = n())
 
 gRNA_count <- array_long %>% 
   dplyr::filter(gRNA %in% c(1:10)) %>% 
   group_by(Position, gRNA) %>% 
   summarise(count = n())
 
+# Barplot of gRNA coverage
+
+gRNA_coverage_plot <- ggplot(gRNA_coverage, aes(x = factor(gRNA), y = count)) +
+  geom_bar(stat = "identity", fill = "lightblue") +
+  labs(x = "gRNA", y = "Coverage", title = "Coverage per gRNA") +
+  geom_text(aes(label = count), vjust = -0.5, size = 5, color = "black") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(size = 18),
+    axis.title.y = element_text(size = 18, face = "bold"),
+    axis.title.x = element_text(size = 18, face = "bold"),
+    axis.text.y = element_text(size = 18),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5)
+  )
+gRNA_coverage_plot
+# ggsave(file="gRNA_coverage_plot.svg", plot=gRNA_coverage_plot, width=10, height=8)
+
+position_coverage_plot <- ggplot(position_coverage, aes(x = factor(Position), y = count)) +
+  geom_bar(stat = "identity", fill = "lightblue") +
+  labs(x = "Position", y = "Coverage", title = "Coverage per position") +
+  geom_text(aes(label = count), vjust = -0.5, size = 5, color = "black") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(size = 18),
+    axis.title.y = element_text(size = 18, face = "bold"),
+    axis.title.x = element_text(size = 18, face = "bold"),
+    axis.text.y = element_text(size = 18),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5)
+  )
+position_coverage_plot
+# ggsave(file="position_coverage_plot.svg", plot=position_coverage_plot, width=10, height=8)
 
 heatmap <- ggplot(gRNA_count, aes(x = Position, y = factor(gRNA), fill = count)) +
   geom_tile(color = "white") +
@@ -30,14 +74,14 @@ heatmap <- ggplot(gRNA_count, aes(x = Position, y = factor(gRNA), fill = count))
   labs(x = "Position within the array", y = "gRNA") +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(size = 18, face = "bold"),
+    axis.text.x = element_text(size = 18),
     axis.title.y = element_text(size = 18, face = "bold"),
     axis.title.x = element_text(size = 18, face = "bold"),
-    axis.text.y = element_text(size = 18, face = "bold"),
+    axis.text.y = element_text(size = 18),
     axis.ticks = element_blank(),
     panel.grid.minor = element_blank(),
     plot.title = element_text(size = 16, face = "bold", hjust = 0.5)
   )
-
-ggsave(file="array_library.svg", plot=heatmap, width=10, height=8)
+heatmap
+# ggsave(file="array_library.svg", plot=heatmap, width=10, height=8)
 

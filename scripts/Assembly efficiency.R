@@ -34,28 +34,32 @@ p <- percent_count %>%
   ggplot(aes(gRNA_count, Percentage)) +
   geom_bar(stat = "summary", fill = "#97B0B6", width = 0.6) +
   geom_point(color = "#525352", size = 2, alpha = 0.8) +
+  geom_text(aes(y = percent_mean, label = round(percent_mean, 1)), 
+            vjust = -2.75, size = 4) +
   labs(
     title = "Bulk Plasmid Sequencing",
     y = "Percentage of sequenced arrays", 
     x = "Number of gRNAs in an array"
   ) +
+  lims(y = c(0, 100)) +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(size = 14, face = "bold"),
+    axis.text.x = element_text(size = 14),
     axis.title.x = element_text(size = 16, face = "bold"),
     axis.title.y = element_text(size = 16, face = "bold"),
-    axis.text.y = element_text(size = 14, face = "bold"),
+    axis.text.y = element_text(size = 14),
     axis.ticks = element_blank(),
     panel.grid.minor= element_blank(),
     panel.grid.major.x =  element_blank(),
     plot.title = element_text(size = 18, face = "bold", hjust = 0.5)
   )
+p
 
-# ggsave(file="BulkPlasmidSeq.jpg", plot=p, width=10, height=8)
+ggsave(file="BulkPlasmidSeq.svg", plot=p, width=10, height=8)
 
 #Clonal Plasmid sequencing
 
-gRNA_dist <-  read_tsv("data/nanopore_sequencing/clonal_plasmid_sequencing/Clonal_gRNAarrays.tsv", col_names = T)
+clonal_dist <-  read_tsv("data/nanopore_sequencing/clonal_plasmid_sequencing/Clonal_gRNAarrays.tsv", col_names = T)
 
 gRNA_dist_long <-  clonal_dist %>% 
   pivot_longer(cols = - `No of gRNAs in the array`, names_to = "Assembly", values_to = "Count")
