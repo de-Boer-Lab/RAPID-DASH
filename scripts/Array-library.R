@@ -33,14 +33,15 @@ gRNA_count <- array_long %>%
 
 gRNA_coverage_plot <- ggplot(gRNA_coverage, aes(x = factor(gRNA), y = count)) +
   geom_bar(stat = "identity", fill = "lightblue") +
-  labs(x = "gRNA", y = "Coverage", title = "Coverage per gRNA") +
-  geom_text(aes(label = count), vjust = -0.5, size = 5, color = "black") +
+  labs(y = "Total Count", x = "", title = "") +
+  geom_text(aes(label = count), hjust = 1.5, size = 5, color = "black") +
   theme_minimal() +
+  coord_flip() +
   theme(
     axis.text.x = element_text(size = 18),
     axis.title.y = element_text(size = 18, face = "bold"),
     axis.title.x = element_text(size = 18, face = "bold"),
-    axis.text.y = element_text(size = 18),
+    axis.text.y = element_blank(),
     axis.ticks = element_blank(),
     panel.grid.minor = element_blank(),
     plot.title = element_text(size = 16, face = "bold", hjust = 0.5)
@@ -53,6 +54,7 @@ position_coverage_plot <- ggplot(position_coverage, aes(x = factor(Position), y 
   labs(x = "Position", y = "Coverage", title = "Coverage per position") +
   geom_text(aes(label = count), vjust = -0.5, size = 5, color = "black") +
   theme_minimal() +
+  coord_flip() +
   theme(
     axis.text.x = element_text(size = 18),
     axis.title.y = element_text(size = 18, face = "bold"),
@@ -80,8 +82,16 @@ heatmap <- ggplot(gRNA_count, aes(x = Position, y = factor(gRNA), fill = count))
     axis.text.y = element_text(size = 18),
     axis.ticks = element_blank(),
     panel.grid.minor = element_blank(),
-    plot.title = element_text(size = 16, face = "bold", hjust = 0.5)
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    legend.position = "top",
+    legend.direction = "horizontal"
   )
 heatmap
 # ggsave(file="array_library.svg", plot=heatmap, width=10, height=8)
 
+final_plot <- heatmap + gRNA_coverage_plot + 
+  plot_layout(widths = c(3, 1), guides = "collect") & 
+  theme(legend.position = "top", legend.direction = "horizontal")
+final_plot
+
+# ggsave(file="array_library_final.svg", plot=final_plot, width=16, height=12)

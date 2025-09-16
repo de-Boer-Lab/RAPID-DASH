@@ -2,6 +2,7 @@
 library(tidyverse)   # Data manipulation and visualization
 library(flowCore)    # Reading and processing flow cytometry data
 library(ggcyto)      # Flow cytometry specific plotting functions
+library(emmeans)
 
 # List all .fcs files in the specified directory and get full file paths
 file_paths <- list.files("data/flowcytometry/GFPreporter/Singlets/", pattern="fcs", full.names = TRUE)
@@ -62,6 +63,13 @@ percent_data <- all_data |>
   group_by(sample_name, Rep) |>
   summarize(percentage = mean(`FL1-A` > 4000) * 100, .groups = "drop") |> 
   mutate(Sample = paste(sample_name, "_", Rep, sep = ""))
+
+#count `FL1-A` values greater than 4000 for each sample and replicate and the total cells in each as well
+percent_data_count <- all_data |> 
+  group_by(sample_name, Rep) |> 
+  summarise(GFP_positive = sum(`FL1-A` > 4000), total_cells = n()) |> 
+  mutate(percentage = GFP_positive / total_cells * 100) 
+
 
 # Compute the mean GFP+ percentage per sample across replicates, and assign a Category based on the sample name
 percent_data_mean <- percent_data |> 
@@ -129,100 +137,71 @@ GFP_reporter_plot
 
 
 #save the plot to a file
-ggsave(file = "GFP_reporter_plot.svg", plot = GFP_reporter_plot,
-       width = 15, height = 12)
+# ggsave(file = "GFP_reporter_plot.svg", plot = GFP_reporter_plot,
+#        width = 15, height = 12)
 
+percent_data <- percent_data |> 
+  mutate(sample_name = factor(percent_data$sample_name,
+                              levels = c("G0", "G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10", "GFPonly")))
+group_levels <- levels(percent_data$sample_name)
+gRNA_groups <- group_levels[group_levels %in% paste0("G", 1:10)]  # G1 to G10
 
-get_sig_label <- function(p) {
-  if (is.na(p)) return("")
-  else if (p < 0.001) return("***")
-  else if (p < 0.01) return("**")
-  else if (p < 0.05) return("*")
-  else return("")
-}
+results_G0 <- list()
+results_GFPonly <- list()
 
+#Comparing G0 with all other groups (G1-G10)
 
-#statistical analysis using ANOVA and post-hoc Tukey's HSD test
-anova_result <- aov(percentage ~ sample_name, data = percent_data)
-postHOC <- tukey_hsd(anova_result, p.adjust.method = "BH")
-
-pairwise_results <- postHOC |> 
-  mutate(group1 = factor(group1, levels = c("G0", "G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10", "GFPonly")),
-         group2 = factor(group2, levels = c("G0", "G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10", "GFPonly"))) 
-
-all_groups <- union(pairwise_results$group1, pairwise_results$group2)
-all_combos <- expand.grid(group1 = all_groups, group2 = all_groups)
-
-pairwise_results_complete <- all_combos %>%
-  left_join(pairwise_results, by = c("group1", "group2"))
-
-
-p_log_matrix <- pairwise_results_complete %>%
-  select(group1, group2, p.adj) |> 
-  mutate(p.adj = -log10(p.adj)) |> 
-  pivot_wider(names_from = group2, values_from = p.adj) %>%
-  column_to_rownames("group1") %>%
-  as.matrix()
-
-# TO make the matrix symmetrical
-for (i in 1:nrow(p_log_matrix)) {
-  for (j in 1:ncol(p_log_matrix)) {
-    if (is.na(p_log_matrix[i, j]) && !is.na(p_log_matrix[j, i])) {
-      p_log_matrix[i, j] <- p_log_matrix[j, i]
-    } else if (!is.na(p_log_matrix[i, j]) && is.na(p_log_matrix[j, i])) {
-      p_log_matrix[j, i] <- p_log_matrix[i, j]
-    }
-  }
-}
-diag(p_log_matrix) <- NA  # Optional
-
-group_levels <- c("G0", "G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9", "G10", "GFPonly")
-p_log_matrix <- p_log_matrix[group_levels, group_levels]
-p_log_matrix
-
-pairwise_long <- as.data.frame(p_log_matrix) %>%
-  rownames_to_column(var = "Group1") %>%
-  pivot_longer(-Group1, names_to = "Group2", values_to = "p_log")
-
-group_levels <- rownames(p_log_matrix)
-pairwise_long <- pairwise_long %>%
-  mutate(
-    group1 = factor(Group1, levels = group_levels),
-    group2 = factor(Group2, levels = group_levels)
+for (g in gRNA_groups) {
+  test <- t.test(percentage ~ sample_name, data = percent_data %>% 
+                   dplyr::filter(sample_name %in% c(g, "G0")))
+  results_G0[[g]] <- data.frame(
+    comparison = paste(g, "vs G0"),
+    p_value = test$p.value
   )
+}
 
-#Create significance labels 
-pairwise_long <- pairwise_long |> 
-  mutate(sig_label = case_when(
-    is.na(p_log) ~ "",
-    p_log > -log10(0.001) ~ "***",
-    p_log > -log10(0.01)  ~ "**",
-    p_log > -log10(0.05)  ~ "*",
+# Bonferroni correction
+df_G0 <- bind_rows(results_G0) %>%
+  mutate(p_adj = p.adjust(p_value, method = "bonferroni"))
+
+
+#Comparing GFPonly with all other groups (G1-G10)
+
+for (g in gRNA_groups) {
+  test <- t.test(percentage ~ sample_name, data = percent_data %>% 
+                   dplyr::filter(sample_name %in% c(g, "GFPonly")))
+  results_GFPonly[[g]] <- data.frame(
+    comparison = paste(g, "vs GFPonly"),
+    p_value = test$p.value
+  )
+}
+
+# Bonferroni correction
+df_GFPonly <- bind_rows(results_GFPonly) %>%
+  mutate(p_adj = p.adjust(p_value, method = "bonferroni"))
+
+df_G0 <- df_G0 %>%
+  mutate(significance = case_when(
+    p_adj < 0.001 ~ "***",
+    p_adj < 0.01  ~ "**",
+    p_adj < 0.05  ~ "*",
     TRUE ~ ""
-  )) |> 
-  mutate(
-    label_text = ifelse(!is.na(p_log), paste0(round(p_log, 1), sig_label), ""),
-    sig_flag = ifelse(sig_label != "", TRUE, FALSE)
+  ),
+  p_value = format(p_value, scientific = TRUE, digits = 3),
+  p_adj   = format(p_adj, scientific = TRUE, digits = 3))
+
+df_GFPonly <- df_GFPonly %>%
+  mutate(significance = case_when(
+    p_adj < 0.001 ~ "***",
+    p_adj < 0.01  ~ "**",
+    p_adj < 0.05  ~ "*",
+    TRUE ~ ""
+  ),
+  p_value = format(p_value, scientific = TRUE, digits = 3),
+  p_adj   = format(p_adj, scientific = TRUE, digits = 3)
   )
 
-pairwise_long
+#write the files into a tsv
+write_tsv(df_G0, "G0_comparisons.tsv")
+write_tsv(df_GFPonly, "GFPonly_comparisons.tsv")
 
-pairwise_comparisons_heatmap <- ggplot(pairwise_long, aes(x = Group2, y = Group1, fill = p_log)) +
-  geom_tile(color = "white", linewidth = 0.5) +  # base heatmap
-  geom_text(aes(label = label_text), size = 5) +  # asterisks
-  scale_fill_gradient(
-    low = "white", high = "steelblue",
-    name = expression(-log[10](p[adj])),
-    na.value = "grey90"
-  ) +
-  coord_fixed() +
-  labs(x = NULL, y = NULL) +
-  theme_minimal(base_size = 14) +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1, face = "bold"),
-    axis.text.y = element_text(face = "bold"),
-    panel.grid = element_blank(),
-    plot.title = element_text(hjust = 0.5, face = "bold")
-  )
-
-ggsave(file = "pairwise_comparisons_heatmap.svg",plot = pairwise_comparisons_heatmap, width = 14, height = 12)
