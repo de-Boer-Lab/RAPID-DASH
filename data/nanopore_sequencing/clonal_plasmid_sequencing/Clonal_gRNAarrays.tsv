@@ -1,15 +1,15 @@
 No of gRNAs in the array	Assembly
-0	0
-1	0
+0	3
+1	2
 2	0
-3	1
+3	3
 4	2
-5	3
-6	1
-7	3
-8	6
-9	4
-10	1600
->10	6
-Not in any  range	50
-Total	1676
+5	5
+6	7
+7	5
+8	8
+9	7
+10	1951
+>10	0
+Not in any  range	61
+Total	2054
